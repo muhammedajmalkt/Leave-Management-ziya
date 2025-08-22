@@ -31,6 +31,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error("Login error:", err);
+      alert(err.response?.data?.message  ||"Error occured")
     } finally {
       setLoading(false);
     }
