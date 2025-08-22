@@ -42,7 +42,9 @@ const seedUsers = async () => {
     }
     console.log('User seeding completed successfully');
   } catch (error) {
+    
     console.error('Error seeding users:', error.message);
+
   } finally {
     await mongoose.connection.close();
     console.log('Disconnected from MongoDB');
