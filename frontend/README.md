@@ -29,13 +29,3 @@ A full-stack application for managing employee leave requests, featuring a backe
 5. **CEO** → Final approval
 Each stage must be approved before moving to the next level. Any rejection stops the workflow immediately.
 
-
-## Quick Start
-
-
-### Backend Setup
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/your-username/leave-management-system.git
-   cd leave-management-system/backend
