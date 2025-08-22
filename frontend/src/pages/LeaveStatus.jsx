@@ -35,7 +35,9 @@ const LeaveStatus = () => {
     try {
       const response = await approveLeaveApi(id);
       setLeaveData(response.data); 
+
       const updatedResponse = await getLeaveById(id);
+      
       setLeaveData(updatedResponse.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to approve leave');
@@ -99,6 +101,7 @@ const LeaveStatus = () => {
 
   if (loading) return <div className="text-center p-8">Loading...</div>;
   if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
+
   if (!leaveData) return <div className="text-center p-8">No leave data found</div>;
 
   const { leaveRequest, approvalFlow } = leaveData;
@@ -108,7 +111,7 @@ const LeaveStatus = () => {
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-sm p-8 h-[80vh] flex flex-col">
         <div className="mb-8">
           <h1 className="text-2xl font-medium text-gray-800 mb-2">Leave Status</h1>
-          <div className="w-full h-px bg-gray-200"></div>
+          <div className="w-full h-px bg-blue-200"></div>
         </div>
 
         <div className="relative mb-16 h-full">
@@ -117,11 +120,11 @@ const LeaveStatus = () => {
               <span className="text-sm font-medium text-gray-700">Employee</span>
               <div className="relative">
                 <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center mb-4 ${getStageStyles(
+                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center  mb-4 ${getStageStyles(
                     getEmployeeStatus()
                   )}`}
                 >
-                  <span className="text-gray-700 font-medium">EM</span>
+                                <img src='/ziya1.png' alt='image' className='object-cover w-full'/>
                 </div>
               </div>
             </div>
@@ -137,7 +140,7 @@ const LeaveStatus = () => {
                     getApprovalStatus('Team Lead')
                   )}`}
                 >
-                  <span className="text-gray-700 font-medium">TL</span>
+                  <img src='/ziya2.png' alt='image' className='object-cover w-full'/>
                 </div>
               </div>
             </div>
@@ -152,7 +155,7 @@ const LeaveStatus = () => {
                     getApprovalStatus('Project Lead')
                   )}`}
                 >
-                  <span className="text-gray-700 font-medium">PL</span>
+                  <img src='/ziya3.png' alt='image' className='object-cover w-full'/>
                 </div>
               </div>
             </div>
@@ -168,7 +171,7 @@ const LeaveStatus = () => {
                     getApprovalStatus('HR')
                   )}`}
                 >
-                  <span className="text-gray-700 font-medium">HR</span>
+                  <img src='/ziya4.png' alt='image' className='object-cover w-full'/>
                 </div>
               </div>
             </div>
@@ -184,7 +187,7 @@ const LeaveStatus = () => {
                     getApprovalStatus('CEO')
                   )}`}
                 >
-                  <span className="text-gray-700 font-medium">CEO</span>
+                  <img src='/ziya5.png' alt='image' className='object-cover w-full'/>
                 </div>
               </div>
             </div>
@@ -192,7 +195,7 @@ const LeaveStatus = () => {
 
           {/* Dotted Lines */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ height: '300px' }}>
-            <path d="M 120 90 Q 200 180 230 210"     
+            <path d="M 120 110 Q 100 280 580 400"     
           stroke={getPathColor('Employee', 'Team Lead')}
               strokeWidth="2"
               strokeDasharray="8,4"
