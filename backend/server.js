@@ -8,28 +8,8 @@ import userRoutes from "./src/routers/userRoutes.js"
 import cookieParser from "cookie-parser"
 
 const app = express()
-// app.use(cors({origin:["http://localhost:5173","https://leave-management-ziya.vercel.app/"],
-//     credentials:true}))
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://leave-management-ziya.vercel.app/",
-];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // if you need to allow cookies/auth headers
-  })
-);
+app.use(cors({origin:["http://localhost:5173","https://leave-management-ziya.vercel.app"],
+    credentials:true}))
 app.use(express.json())
 app.use(cookieParser())
 
