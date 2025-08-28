@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({   
-  baseURL: ["http://localhost:7001/api","https://leave-management-ziya.onrender.com/api"],
+  baseURL: "https://leave-management-ziya.onrender.com/api",
+//   baseURL: ["https://leave-management-ziya.onrender.com/api","http://localhost:7001/api"],
 
          withCredentials: true, });
 
