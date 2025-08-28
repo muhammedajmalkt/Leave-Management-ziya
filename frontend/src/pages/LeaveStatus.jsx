@@ -20,7 +20,7 @@ export default function LeaveStatus() {
         setLeaveData(response.data)
         let { role } = getUser()
         setCurrentUserRole(role)
-        
+
         setLoading(false)
       } catch (err) {
         console.log(err)
@@ -52,7 +52,7 @@ export default function LeaveStatus() {
       setLeaveData(response.data)
       const updatedResponse = await getLeaveById(id)
       setLeaveData(updatedResponse.data)
-      
+
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to reject leave')
     } finally {
@@ -151,40 +151,103 @@ export default function LeaveStatus() {
     if (leaveRequest?.status === 'Rejected') {
       return lineConnections[connectionIndex].src
     }
-        if (leaveRequest?.status === 'Approved') {
+    if (leaveRequest?.status === 'Approved') {
       return lineConnections[connectionIndex].srcGreen
     }
-        const lastApprovedIndex = roles.findIndex(role => role.status !== 'Approved') - 1
-    
+    const lastApprovedIndex = roles.findIndex(role => role.status !== 'Approved') - 1
+
     if (connectionIndex <= lastApprovedIndex) {
       return lineConnections[connectionIndex].srcGreen
     }
-    
+
     return lineConnections[connectionIndex].src
   }
   console.log(leaveRequest);
-  
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-8 content-center">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-sm p-8 h-[80vh] flex flex-col">
         <div className=" flex justify-between ">
 
-          <h1 className="text-2xl font-medium text-gray-800 mb-2">Leave Status 
-              </h1>
-            <span className="px-4 py-2 text-xs text-end ">
-                  <button
-                    className="border border-blue-300 px-2 py-1 rounded-2xl "
-                  >
-                   {leaveRequest?.status}
-                  </button>
-                </span>
+          <h1 className="text-2xl font-medium text-gray-800 mb-2">Leave Status
+          </h1>
+          <span className="px-4 py-2 text-xs text-end ">
+            <button
+              className="border border-blue-300 px-2 py-1 rounded-2xl "
+            >
+              {leaveRequest?.status}
+            </button>
+          </span>
         </div>
-          <div className="w-full h-px bg-blue-200 mb-20"></div>
+        <div className="w-full h-px bg-blue-200 mb-20"></div>
 
-        <div className="relative mt-16 h-full  ">
+
+
+        {/* Mobile*/}
+        <div className="lg:hidden mb-8">
+          <div className="space-y-2">
+            {roles.map((role, index) => (
+              <div key={role.id} className="flex flex-col items-center">
+                {index > 0 && (
+                  <div className={`w-0.5 h-6 relative mb-1 ${role.status === "Approved" ? "bg-green-100" : role.status === "Pending" ? "bg-yellow-300" : role.status === "Rejected" ? "bg-red-100" : "bg-gray-300 "
+                            }`}>
+                    {(roles[index - 1].status === 'Approved' && role.status === 'Approved') && (
+                      <div className="absolute inset-0 bg-green-400"></div>
+                    )}
+                    {roles[index - 1].status === 'Rejected' && (
+                      <div className="absolute inset-0 bg-red-400"></div>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center w-full">
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="relative">
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${getStageStyles(role.status)}`}>
+                        {role.image ? (
+                          <img
+                            src={role.image}
+                            alt={role.name}
+                            className="w-12 h-12 rounded-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none"
+                              e.target.nextSibling.style.display = "flex"
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium ${role.status === "Approved" ? "bg-green-100 text-green-700" :
+                              role.status === "Pending" ? "bg-yellow-100 text-yellow-700" :
+                                role.status === "Rejected" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
+                            }`}
+                          style={{ display: role.image ? 'none' : 'flex' }}
+                        >
+                          {role.fallback}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-4 flex-1">
+                    <p className="font-medium text-gray-800">{role.name}</p>
+                    <p className={`text-sm ${role.status === "Approved" ? "text-green-600" :
+                        role.status === "Pending" ? "text-yellow-600" :
+                          role.status === "Rejected" ? "text-red-600" : "text-gray-500"
+                      }`}>
+                      {role.status}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+        <div className="relative mt-16 h-full hidden lg:block  ">
           {lineConnections.map((connection, index) => (
-            <img 
+            <img
               key={index}
               src={getVectorSource(index)}
               alt={`Connection ${index}`}
@@ -204,9 +267,8 @@ export default function LeaveStatus() {
               <div className="flex flex-col items-center cursor-pointer">
                 {role.labelPosition === "top" && (
                   <span
-                    className={`mb-2 text-base font-semibold transition-all duration-300 ${
-                      hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
-                    }`}
+                    className={`mb-2 text-base font-semibold transition-all duration-300 ${hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
+                      }`}
                   >
                     {role.name}
                   </span>
@@ -216,27 +278,24 @@ export default function LeaveStatus() {
                   <img
                     src={role.image}
                     alt={role.name}
-                    className={`w-full h-full rounded-full object-cover ${getStageStyles(role.status)} ${
-                    hoveredRole === role.id ? "shadow" : "" }`}
-                    onError={(e) => { 
+                    className={`w-full h-full rounded-full object-cover ${getStageStyles(role.status)} ${hoveredRole === role.id ? "shadow" : ""}`}
+                    onError={(e) => {
                       e.target.style.display = "none"
                       e.target.nextSibling.style.display = "flex"
                     }}
                   />
-                  <div className={`w-full h-full rounded-full flex items-center justify-center text-xs font-medium ${
-                    role.status === "Approved" ? "bg-green-100 text-green-700" : 
-                    role.status === "Pending" ? "bg-yellow-100 text-yellow-700" : 
-                    role.status === "Rejected" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
-                  }`} style={{display: 'none'}}>
+                  <div className={`w-full h-full rounded-full flex items-center justify-center text-xs font-medium ${role.status === "Approved" ? "bg-green-100 text-green-700" :
+                      role.status === "Pending" ? "bg-yellow-100 text-yellow-700" :
+                        role.status === "Rejected" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
+                    }`} style={{ display: 'none' }}>
                     {role.fallback}
                   </div>
                 </div>
 
                 {role.labelPosition === "bottom" && (
                   <span
-                    className={`mt-2 text-base font-semibold transition-all duration-300 ${
-                      hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
-                    }`}
+                    className={`mt-2 text-base font-semibold transition-all duration-300 ${hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
+                      }`}
                   >
                     {role.name}
                   </span>
@@ -251,26 +310,24 @@ export default function LeaveStatus() {
             <Link to="/requests">
               <p className=" text-gray-700 mb-6 hover:text-blue-600 ">Check Details, Then Approve or Reject</p>
             </Link>
-                        <div className="flex justify-end gap-6">
+            <div className="flex justify-end gap-6">
               <button
                 onClick={handleReject}
                 disabled={isProcessing}
-                className={`px-4 py-2 border border-[#F34040] rounded-lg font-medium transition-colors ${
-                  isProcessing 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                className={`px-4 py-2 border border-[#F34040] rounded-lg font-medium transition-colors ${isProcessing
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-[#F34040] text-white hover:bg-red-50 hover:text-red-700'
-                }`}
+                  }`}
               >
                 {isProcessing ? 'Processing...' : 'Reject Leave'}
               </button>
               <button
                 onClick={handleApprove}
                 disabled={isProcessing}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isProcessing
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${isProcessing
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-[#31ED31] text-white hover:bg-green-600'
-                }`}
+                  }`}
               >
                 {isProcessing ? 'Processing...' : 'Approve Leave'}
               </button>
@@ -280,9 +337,8 @@ export default function LeaveStatus() {
 
         {!isProcessing && leaveRequest?.status !== 'Pending' && (
           <div className="text-center mt-4">
-            <p className={`text-lg font-medium ${
-              leaveRequest?.status === 'Approved' ? 'text-green-600' : 'text-red-600'
-            }`}>
+            <p className={`text-lg font-medium ${leaveRequest?.status === 'Approved' ? 'text-green-600' : 'text-red-600'
+              }`}>
               Leave request has been {leaveRequest?.status?.toLowerCase()}!
             </p>
           </div>

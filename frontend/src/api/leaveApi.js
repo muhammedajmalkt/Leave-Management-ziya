@@ -1,10 +1,13 @@
 import axios from "axios";
 
+const isDev = import.meta.env.MODE === "development";
+
 const API = axios.create({
   // baseURL: "http://localhost:7001/api",
- baseURL: import.meta.env.MODE === "development"
+  baseURL: isDev
     ? "http://localhost:7001/api"
-    : "https://leave-management-ziya.onrender.com/api",  withCredentials: true,
+    : "https://leave-management-ziya.onrender.com/api", 
+    withCredentials: true,
 });
 
 export const  getLeaveById = (id) => API.get(`/leaves/${id}`)
