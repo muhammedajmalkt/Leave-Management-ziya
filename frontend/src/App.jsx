@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import LeaveStatus from './pages/LeaveStatus'
 import Navbar from './components/Navbar'
 import Login from './pages/Login'
-import EmployeeLeaves from './pages/employeeLeaves'
 import Requests from './pages/Requests'
+import EmployeeLeaves from './pages/EmployeesLeaves'
 
 const App = () => {
   // const location = useLocation()
