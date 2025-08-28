@@ -1,6 +1,6 @@
 
 import User from '../models/userModel.js';
-import LeaveRequest from '../models/LeaveRequestModel.js'
+import LeaveRequest from '../models/leaveRequestModel.js'
 
 
 const APPROVAL_CHAIN = ['Team Lead', 'Project Lead', 'HR', 'CEO'];
