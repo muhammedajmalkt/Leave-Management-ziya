@@ -2,8 +2,9 @@ import axios from "axios";
 
 const API = axios.create({
   // baseURL: "http://localhost:7001/api",
-  baseURL:import.meta.env.VITE_API_URL,
-  withCredentials: true,
+ baseURL: import.meta.env.MODE === "development"
+    ? "http://localhost:7001/api"
+    : "https://leave-management-ziya.onrender.com/api",  withCredentials: true,
 });
 
 export const  getLeaveById = (id) => API.get(`/leaves/${id}`)
