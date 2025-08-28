@@ -5,12 +5,12 @@ import User from '../models/userModel.js';
 
 
 const users = [
-  { name: 'Employee1', password: 'password123', role: 'Employee' },
-  { name: 'Employee2', password: 'password123', role: 'Employee' },
-  { name: 'TeamLead1', password: 'password123', role: 'Team Lead' },
-  { name: 'ProjectLead1', password: 'password123', role: 'Project Lead' },
-  { name: 'HR1', password: 'password123', role: 'HR' },
-  { name: 'CEO1', password: 'password123', role: 'CEO' },
+  { name: 'Employee1', password: 'password123', role: 'Employee' ,profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756372873/leave-mgt/mbmy1yir1ywtmpek0si8.png"},
+  { name: 'Employee2', password: 'password123', role: 'Employee' ,profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756372873/leave-mgt/mbmy1yir1ywtmpek0si8.png" },
+  { name: 'TeamLead1', password: 'password123', role: 'Team Lead',profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756372894/leave-mgt/m7d9wns8enool7b1ja7p.png" },
+  { name: 'ProjectLead1', password: 'password123', role: 'Project Lead' ,profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756372923/leave-mgt/eulx9quuoxmmx2jd3us7.png" },
+  { name: 'HR1', password: 'password123', role: 'HR' ,profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756372979/leave-mgt/y13k4cznigzqifpi9yhp.png"},
+  { name: 'CEO1', password: 'password123', role: 'CEO', profileImage:"https://res.cloudinary.com/daf4u0gre/image/upload/v1756373008/leave-mgt/a54eq99at5vqw7cqkimq.png" },
 ];
 
 const seedUsers = async () => {
@@ -23,7 +23,7 @@ const seedUsers = async () => {
 
     // await User.deleteMany({});
     for (const userData of users) {
-      const { name, password, role } = userData;
+      const { name, password, role ,profileImage } = userData;
 
       const existingUser = await User.findOne({ name, role });
       if (existingUser) {
@@ -36,6 +36,7 @@ const seedUsers = async () => {
         name,
         password: hashedPassword,
         role,
+        profileImage
       });
 
       await user.save();

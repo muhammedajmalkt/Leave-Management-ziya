@@ -119,12 +119,10 @@ export const getLeavesByUser = async (req, res) => {
 //all requests
 export const getAllLeaveRequests = async (req, res) => {
     const leaves = await LeaveRequest.find()
-      .populate('employeeId', 'name role ')
+      .populate('employeeId', 'name role  profileImage')
       .sort({ createdAt: -1 });
     if (!leaves || leaves.length === 0) {
       return res.status(404).json({ success: false, message: 'No leave requests found' });
-    }
-
+    }    
     res.json({ success: true, leaves });
-
 };

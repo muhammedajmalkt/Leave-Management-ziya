@@ -8,11 +8,10 @@ import userRoutes from "./src/routers/userRoutes.js"
 import cookieParser from "cookie-parser"
 
 const app = express()
-app.use(cors({origin:"http://localhost:5174",
+app.use(cors({origin:"http://localhost:5173",
     credentials:true}))
 app.use(express.json())
 app.use(cookieParser())
-
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("mongoose connected") )

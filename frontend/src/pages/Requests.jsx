@@ -36,6 +36,7 @@ const Requests = () => {
 
   if (loading) return <div className="text-center p-8">Loading...</div>;
   if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
+console.log(leaves);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -49,17 +50,21 @@ const Requests = () => {
               <Link
                 key={leave._id}
                 to={`/status/${leave._id}`}
-                className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                className=" p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex gap-2 "
               >
-                <p className="text-gray-800 font-medium">
-                  {leave?.employeeId?.name} - {leave.reason}
-                </p>
-                <p className="text-gray-600">
-                  {new Date(leave.startDate).toLocaleDateString()} -{' '}
-                  {new Date(leave.endDate).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">Status: {leave.status}</p>
-                <p className="text-gray-600">Current Approver: {leave.currentApprover || 'None'}</p>
+                 <img src={leave?.employeeId?.profileImage} alt={leave?.employeeId?.name}  className='w-8 h-8 rounded-full mt-1.5'/>
+                <div>
+                  <p className="text-gray-800 font-medium">
+                    {leave?.employeeId?.name} - {leave.reason}
+                  </p>
+                  <p className="text-gray-600">
+                    {new Date(leave.startDate).toLocaleDateString()} -{' '}
+                    {new Date(leave.endDate).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-600">Status: {leave.status}</p>
+                  <p className="text-gray-600">Current Approver: {leave.currentApprover || 'None'}</p>
+                </div>
+
               </Link>
             ))}
           </div>

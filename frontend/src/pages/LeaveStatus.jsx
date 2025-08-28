@@ -1,242 +1,261 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { getLeaveById, approveLeaveApi, rejectLeaveApi } from '../api/leaveApi.js';
-import { getUser } from '../utils/getUser';
+import { useState, useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
+import { getLeaveById, approveLeaveApi, rejectLeaveApi } from "../api/leaveApi.js"
+import { getUser } from "../utils/getUser"
 
-const LeaveStatus = () => {
-  const { id } = useParams(); 
-  const [leaveData, setLeaveData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function LeaveStatus() {
+  const { id } = useParams()
+  const [hoveredRole, setHoveredRole] = useState(null)
+  const [leaveData, setLeaveData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const [currentUserRole, setCurrentUserRole] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false); 
-  
+  const [error, setError] = useState(null)
+  const [currentUserRole, setCurrentUserRole] = useState(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+
   useEffect(() => {
     const fetchLeave = async () => {
       try {
-        const response = await getLeaveById(id);
-        setLeaveData(response.data);
-        let {role} = getUser()
-
-        setCurrentUserRole(role);
-        setLoading(false);
+        const response = await getLeaveById(id)
+        setLeaveData(response.data)
+        let { role } = getUser()
+        setCurrentUserRole(role)
+        
+        setLoading(false)
       } catch (err) {
-        console.log(err);
-        setError(err.response?.data?.message || 'Failed to fetch leave details');
-        setLoading(false);
+        console.log(err)
+        setError(err.response?.data?.message || 'Failed to fetch leave details')
+        setLoading(false)
       }
-    };
-    fetchLeave();
-  }, [id]);
+    }
+    fetchLeave()
+  }, [id])
 
   const handleApprove = async () => {
-    setIsProcessing(true);
+    setIsProcessing(true)
     try {
-      const response = await approveLeaveApi(id);
-      setLeaveData(response.data); 
-
-      const updatedResponse = await getLeaveById(id);
-      
-      setLeaveData(updatedResponse.data);
+      const response = await approveLeaveApi(id)
+      setLeaveData(response.data)
+      const updatedResponse = await getLeaveById(id)
+      setLeaveData(updatedResponse.data)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to approve leave');
+      setError(err.response?.data?.message || 'Failed to approve leave')
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
   const handleReject = async () => {
-    setIsProcessing(true);
+    setIsProcessing(true)
     try {
-      const response = await rejectLeaveApi(id);
-      setLeaveData(response.data);
-      const updatedResponse = await getLeaveById(id);
-      setLeaveData(updatedResponse.data);
+      const response = await rejectLeaveApi(id)
+      setLeaveData(response.data)
+      const updatedResponse = await getLeaveById(id)
+      setLeaveData(updatedResponse.data)
+      
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to reject leave');
+      setError(err.response?.data?.message || 'Failed to reject leave')
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
   const getStageStyles = (stageStatus) => {
     switch (stageStatus) {
       case 'Approved':
-        return 'bg-green-100 border-green-400 shadow-[0_0_40px_rgba(34,197,94,0.5)]';
+        return 'bg-green-100  shadow-[0_0_18px_6px_rgba(110,255,134,1)]'
       case 'Pending':
-        return 'bg-yellow-100 border-yellow-400 shadow-[0_0_40px_rgba(250,204,21,0.5)]';
+        return 'bg-yellow-100 border border-yellow-400 shadow-[0_0_40px_rgba(300,204,50,2)]'
       case 'Rejected':
-        return 'bg-red-100 border-red-400 shadow-[0_0_40px_rgba(239,68,68,0.5)]';
-      default: 
-        return 'bg-gray-100 border-gray-300';
+        return 'bg-red-100  shadow-[0_0_18px_6px_rgba(243,64,64,0.6)]'
+      default:
+        return 'bg-gray-100 border-gray-300'
     }
-  };
-
-  const getPathColor = (fromStage, toStage) => {
-    if (!leaveData || !leaveData.approvalFlow) return '#6b7280';
-    
-    if (leaveData.leaveRequest?.status === 'Rejected') return '#ef4444';
-    
-    const fromIndex = leaveData.approvalFlow.findIndex((x) => x.role === fromStage);
-    const toIndex = leaveData.approvalFlow.findIndex((s) => s.role === toStage);
-    
-    if (fromIndex === -1 || toIndex === -1) return '#6b7280';
-    
-    return leaveData.approvalFlow[fromIndex]?.status === 'Approved' &&
-           leaveData.approvalFlow[toIndex]?.status !== 'Upcoming' ? '#22c55e' : '#6b7280'; };
+  }
 
   const getApprovalStatus = (role) => {
-    if (!leaveData || !leaveData.approvalFlow) return 'Upcoming';
-    const stage = leaveData.approvalFlow.find((s) => s.role === role);
-    return stage?.status || 'Upcoming';
-  };
+    if (!leaveData || !leaveData.approvalFlow) return 'Upcoming'
+    const stage = leaveData.approvalFlow.find((s) => s.role === role)
+    return stage?.status || 'Upcoming'
+  }
 
   const getEmployeeStatus = () => {
-    if (!leaveData) return 'Pending';
-    if (leaveData.leaveRequest?.status === 'Approved') return 'Approved';
-      if (leaveData.leaveRequest?.status === 'Rejected') return 'Rejected';
-    return 'Approved';
-  };
+    if (!leaveData) return 'Pending'
+    if (leaveData.leaveRequest?.status === 'Approved') return 'Approved'
+    if (leaveData.leaveRequest?.status === 'Rejected') return 'Rejected'
+    return 'Approved'
+  }
 
-  if (loading) return <div className="text-center p-8">Loading...</div>;
-  if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
+  if (loading) return <div className="text-center p-8">Loading...</div>
+  if (error) return <div className="text-center p-8 text-red-600">{error}</div>
+  if (!leaveData) return <div className="text-center p-8">No leave data found</div>
 
-  if (!leaveData) return <div className="text-center p-8">No leave data found</div>;
+  const { leaveRequest } = leaveData
 
-  const { leaveRequest, approvalFlow } = leaveData;
+  const roles = [
+    {
+      id: "employee",
+      name: "Employee",
+      position: { left: "4rem", top: "4rem" },
+      status: getEmployeeStatus(),
+      image: "/ziya1.png",
+      fallback: "E",
+      labelPosition: "top",
+    },
+    {
+      id: "teamlead",
+      name: "Team Lead",
+      position: { left: "16rem", top: "14rem" },
+      status: getApprovalStatus('Team Lead'),
+      image: "/ziya2.png",
+      fallback: "TL",
+      labelPosition: "bottom",
+    },
+    {
+      id: "projectlead",
+      name: "Project Lead",
+      position: { left: "44%", top: "0.5rem", transform: "translateX(-50%)" },
+      status: getApprovalStatus('Project Lead'),
+      image: "/ziya3.png",
+      fallback: "PL",
+      labelPosition: "top",
+    },
+    {
+      id: "hr",
+      name: "HR",
+      position: { right: "22.2rem", top: "13.3rem" },
+      status: getApprovalStatus('HR'),
+      image: "/ziya4-.png",
+      fallback: "HR",
+      labelPosition: "bottom",
+    },
+    {
+      id: "ceo",
+      name: "CEO",
+      position: { right: "12.2rem", top: "4rem" },
+      status: getApprovalStatus('CEO'),
+      image: "/ziya5.png",
+      fallback: "CEO",
+      labelPosition: "top",
+    },
+  ]
+
+  const lineConnections = [
+    { src: "/Vector1.png", srcGreen: "/Vector1g.png", from: 0, to: 1, style: { left: "94px", top: "140px", width: "180px", height: "120px" } },
+    { src: "/Vector2.png", srcGreen: "/Vector2g.png", from: 1, to: 2, style: { left: "305px", top: "55px", width: "180px", height: "200px" } },
+    { src: "/Vector3.png", srcGreen: "/Vector3g.png", from: 2, to: 3, style: { left: "480px", top: "60px", width: "180px", height: "200px" } },
+    { src: "/Vector4.png", srcGreen: "/Vector4g.png", from: 3, to: 4, style: { left: "700px", top: "125px", width: "180px", height: "145px" } },
+  ]
+
+  const getVectorSource = (connectionIndex) => {
+    if (leaveRequest?.status === 'Rejected') {
+      return lineConnections[connectionIndex].src
+    }
+        if (leaveRequest?.status === 'Approved') {
+      return lineConnections[connectionIndex].srcGreen
+    }
+        const lastApprovedIndex = roles.findIndex(role => role.status !== 'Approved') - 1
+    
+    if (connectionIndex <= lastApprovedIndex) {
+      return lineConnections[connectionIndex].srcGreen
+    }
+    
+    return lineConnections[connectionIndex].src
+  }
+  console.log(leaveRequest);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 p-8 content-center">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-sm p-8 h-[80vh] flex flex-col">
-        <div className="mb-8">
-          <h1 className="text-2xl font-medium text-gray-800 mb-2">Leave Status</h1>
-          <div className="w-full h-px bg-blue-200"></div>
+        <div className=" flex justify-between ">
+
+          <h1 className="text-2xl font-medium text-gray-800 mb-2">Leave Status 
+              </h1>
+            <span className="px-4 py-2 text-xs text-end ">
+                  <button
+                    className="border border-blue-300 px-2 py-1 rounded-2xl "
+                  >
+                   {leaveRequest?.status}
+                  </button>
+                </span>
         </div>
+          <div className="w-full h-px bg-blue-200 mb-20"></div>
 
-        <div className="relative mb-16 h-full">
-          <div className="absolute left-8 top-8">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Employee</span>
-              <div className="relative">
-                <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center  mb-4 ${getStageStyles(
-                    getEmployeeStatus()
-                  )}`}
-                >
-                                <img src='/ziya1.png' alt='image' className='object-cover w-full'/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute left-80 bottom-16">
-            <div className="flex flex-col items-center gap-2">
-
-              <span className="text-sm font-medium text-gray-700">Team Lead</span>
-              <div className="relative">
-                <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center mb-4 ${getStageStyles(
-                    getApprovalStatus('Team Lead')
-                  )}`}
-                >
-                  <img src='/ziya2.png' alt='image' className='object-cover w-full'/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute left-1/2 top-4 transform -translate-x-1/2">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Project Lead</span>
-              <div className="relative">
-                <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center mb-4 ${getStageStyles(
-                    getApprovalStatus('Project Lead')
-                  )}`}
-                >
-                  <img src='/ziya3.png' alt='image' className='object-cover w-full'/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* HR */}
-          <div className="absolute right-74 bottom-16">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">HR</span>
-              <div className="relative">
-                <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center mb-4 ${getStageStyles(
-                    getApprovalStatus('HR')
-                  )}`}
-                >
-                  <img src='/ziya4.png' alt='image' className='object-cover w-full'/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* CEO */}
-          <div className="absolute right-8 top-8">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">CEO</span>
-              <div className="relative">
-                <div
-                  className={`w-20 h-20 rounded-full border-4 flex items-center justify-center mb-4 ${getStageStyles(
-                    getApprovalStatus('CEO')
-                  )}`}
-                >
-                  <img src='/ziya5.png' alt='image' className='object-cover w-full'/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Dotted Lines */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ height: '300px' }}>
-            <path d="M 120 110 Q 100 280 580 400"     
-          stroke={getPathColor('Employee', 'Team Lead')}
-              strokeWidth="2"
-              strokeDasharray="8,4"
-              fill="none"
+        <div className="relative mt-16 h-full  ">
+          {lineConnections.map((connection, index) => (
+            <img 
+              key={index}
+              src={getVectorSource(index)}
+              alt={`Connection ${index}`}
+              className="absolute hidden lg:block"
+              style={connection.style}
             />
+          ))}
 
-            <path
-              d="M 380 280 Q 450 120 500 60"
-              stroke={getPathColor('Team Lead', 'Project Lead')}
-              strokeWidth="2"
-              strokeDasharray="8,4"
-              fill="none"
-            />
-            <path
-              d="M 600 50 Q 760 250 880 680"
-              stroke={getPathColor('Project Lead', 'HR')}
-              strokeWidth="2"
-              strokeDasharray="8,4"
-              fill="none"
-            />
-            {/* HR to CEO */}
-            <path
-              d="M 10 950 Q 900 290 980 90"
-              stroke={getPathColor('HR', 'CEO')}
-              strokeWidth="2"
-              strokeDasharray="8,4"
-              fill="none"
-            />
-          </svg>
+          {roles.map((role, index) => (
+            <div
+              key={role.id}
+              className="absolute  "
+              style={role.position}
+              onMouseEnter={() => setHoveredRole(role.id)}
+              onMouseLeave={() => setHoveredRole(null)}
+            >
+              <div className="flex flex-col items-center cursor-pointer">
+                {role.labelPosition === "top" && (
+                  <span
+                    className={`mb-2 text-base font-semibold transition-all duration-300 ${
+                      hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
+                    }`}
+                  >
+                    {role.name}
+                  </span>
+                )}
+
+                <div className="relative ">
+                  <img
+                    src={role.image}
+                    alt={role.name}
+                    className={`w-full h-full rounded-full object-cover ${getStageStyles(role.status)} ${
+                    hoveredRole === role.id ? "shadow" : "" }`}
+                    onError={(e) => { 
+                      e.target.style.display = "none"
+                      e.target.nextSibling.style.display = "flex"
+                    }}
+                  />
+                  <div className={`w-full h-full rounded-full flex items-center justify-center text-xs font-medium ${
+                    role.status === "Approved" ? "bg-green-100 text-green-700" : 
+                    role.status === "Pending" ? "bg-yellow-100 text-yellow-700" : 
+                    role.status === "Rejected" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"
+                  }`} style={{display: 'none'}}>
+                    {role.fallback}
+                  </div>
+                </div>
+
+                {role.labelPosition === "bottom" && (
+                  <span
+                    className={`mt-2 text-base font-semibold transition-all duration-300 ${
+                      hoveredRole === role.id ? " transform -translate-y-0.5" : "text-gray-700"
+                    }`}
+                  >
+                    {role.name}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
         {currentUserRole === leaveRequest?.currentApprover && leaveRequest?.status === 'Pending' && (
           <div className="text-end content-end mt-auto pt-6">
             <Link to="/requests">
-              <p className="text-lg text-gray-700 mb-6 hover:text-blue-600 ">Check Details, Then Approve or Reject</p>
+              <p className=" text-gray-700 mb-6 hover:text-blue-600 ">Check Details, Then Approve or Reject</p>
             </Link>
-            <div className="flex justify-end gap-6">
+                        <div className="flex justify-end gap-6">
               <button
                 onClick={handleReject}
                 disabled={isProcessing}
-                className={`px-8 py-3 border border-[#F34040] rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2 border border-[#F34040] rounded-lg font-medium transition-colors ${
                   isProcessing 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : 'bg-[#F34040] text-white hover:bg-red-50 hover:text-red-700'
@@ -247,7 +266,7 @@ const LeaveStatus = () => {
               <button
                 onClick={handleApprove}
                 disabled={isProcessing}
-                className={`px-8 py-3 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   isProcessing
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     : 'bg-[#31ED31] text-white hover:bg-green-600'
@@ -270,7 +289,5 @@ const LeaveStatus = () => {
         )}
       </div>
     </div>
-  );
-};
-
-export default LeaveStatus;
+  )
+}
