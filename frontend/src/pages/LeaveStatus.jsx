@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { getLeaveById, approveLeaveApi, rejectLeaveApi } from "../api/leaveApi.js"
 import { getUser } from "../utils/getUser"
 
-export default function LeaveStatus() {
+const LeaveStatus =()=> {
   const { id } = useParams()
   const [hoveredRole, setHoveredRole] = useState(null)
   const [leaveData, setLeaveData] = useState(null)
@@ -347,3 +347,5 @@ export default function LeaveStatus() {
     </div>
   )
 }
+
+export default LeaveStatus
