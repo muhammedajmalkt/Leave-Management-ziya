@@ -38,7 +38,7 @@ A full-stack application for managing employee leave requests, featuring a backe
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/your-username/leave-management-system.git
+   git clone https://github.com/muhammedajmalkt/Leave-Management-ziya.git
    cd leave-management-system/backend
 
    npm install
